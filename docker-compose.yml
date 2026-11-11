@@ -1,0 +1,40 @@
+services:
+  # ==========================================
+  # Service Produksi (Nginx + Static Build)
+  # Jalankan: docker compose up -d
+  # Akses: http://localhost:8080
+  # ==========================================
+  peta-kampus:
+    container_name: peta-kampus-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN:-}
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    env_file:
+      - .env
+
+  # ==========================================
+  # Service Development (Vite Hot-Reload)
+  # Jalankan: docker compose --profile dev up peta-kampus-dev
+  # Akses: http://localhost:5173
+  # ==========================================
+  peta-kampus-dev:
+    container_name: peta-kampus-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    profiles: ["dev"]
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+

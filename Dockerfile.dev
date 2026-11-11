@@ -1,0 +1,19 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Salin package.json & package-lock.json
+COPY package*.json ./
+
+# Install dependensi
+RUN npm install
+
+# Salin sisa kode proyek
+COPY . .
+
+# Expose port default Vite dev server
+EXPOSE 5173
+
+# Jalankan Vite dengan host 0.0.0.0 agar dapat diakses dari luar container
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
